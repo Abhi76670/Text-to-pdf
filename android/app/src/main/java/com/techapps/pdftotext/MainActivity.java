@@ -1,4 +1,4 @@
-package com.example.texttopdf;
+package com.techapps.pdftotext;
 
 import android.app.Activity;
 import android.content.ContentValues;

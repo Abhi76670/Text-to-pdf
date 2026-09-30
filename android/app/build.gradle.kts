@@ -1,10 +1,10 @@
 plugins { id("com.android.application") }
 
 android {
-    namespace = "com.example.texttopdf"
+    namespace = "com.techapps.pdftotext"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.example.texttopdf"
+        applicationId = "com.techapps.pdftotext"
         minSdk = 29
         targetSdk = 34
         versionCode = 1

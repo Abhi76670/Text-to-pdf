@@ -17,6 +17,7 @@ const $ = (s: string) => document.querySelector(s) as HTMLElement;
 const $$ = (s: string) => Array.from(document.querySelectorAll<HTMLElement>(s));
 const ed = $('#ed'), all = $('#all') as HTMLInputElement, fl = $('#fl');
 const FONTS: [string, string, string][] = [['Documents','Roboto','Roboto'],['Documents','Times New Roman','Tinos'],['Documents','Georgia','Gelasio'],['Documents','Open Sans','Open Sans'],['Documents','Lato','Lato'],['Coding','JetBrains Mono','JetBrains Mono'],['Coding','Fira Code','Fira Code'],['Coding','Courier New','Cousine'],['Coding','Source Code Pro','Source Code Pro'],['Stylish','Pacifico','Pacifico'],['Stylish','Playfair Display','Playfair Display'],['Stylish','Dancing Script','Dancing Script']];
+let selOnly = false;
 let cur = 'home', size = 12, last: Range | null = null;
 const ls = (k: string, d: any) => { try { return JSON.parse(localStorage.getItem(k) || '') ?? d; } catch { return d; } };
 
@@ -36,11 +37,11 @@ const save = () => {
 function run(fn: () => void) {
   ed.focus(); const s = getSelection()!;
   if (last) { s.removeAllRanges(); s.addRange(last); }
-  const whole = all.checked || s.isCollapsed;
+  const whole = (all.checked && !selOnly) || s.isCollapsed;
   if (whole) { const r = document.createRange(); r.selectNodeContents(ed); s.removeAllRanges(); s.addRange(r); }
   document.execCommand('styleWithCSS', false, 'true'); fn();
   if (whole) s.collapseToEnd();
-  save();
+  save(); sync(); setTimeout(sync, 60);
 }
 const cmd = (c: string, v?: string) => document.execCommand(c, false, v);
 function sync() {
@@ -50,7 +51,7 @@ function sync() {
 }
 document.addEventListener('selectionchange', () => {
   const s = getSelection()!;
-  if (s.rangeCount && ed.contains(s.anchorNode)) { last = s.getRangeAt(0).cloneRange(); sync(); }
+  if (s.rangeCount && ed.contains(s.anchorNode)) { last = s.getRangeAt(0).cloneRange(); sync(); $('#selbar').classList.toggle('on', !s.isCollapsed); }
 });
 $('#tb').addEventListener('mousedown', e => { if ((e.target as HTMLElement).tagName !== 'INPUT') e.preventDefault(); });
 $$('[data-c]').forEach(b => b.onclick = () => run(() => cmd(b.dataset.c!)));
@@ -110,3 +111,50 @@ const applyDark = () => { document.body.classList.toggle('dark', dm.checked); lo
 dm.onchange = applyDark; applyDark();
 $('#clr').onclick = () => { ed.innerHTML = ''; save(); toast('Draft cleared'); };
 ed.innerHTML = localStorage.getItem('draft') || ''; ed.oninput = save; save();
+
+// ---- Code style: monospace + syntax colors on the selection (or whole text) ----
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const KW = 'const|let|var|function|return|if|else|for|while|class|import|from|export|default|new|this|def|fun|val|public|private|static|void|int|float|string|bool|boolean|true|false|null|undefined|try|catch|finally|await|async|in|of|switch|case|break|continue|throw|extends|package|interface|type|enum|struct|self|None|True|False|and|or|not|print|echo|elif|lambda|with|as|is|do|end|select|where|insert|update|delete|create|table';
+const TOK = new RegExp(
+  /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|\b(\d+(?:\.\d+)?)\b/.source +
+  '|\\b(' + KW + ')\\b|' +
+  /\b([A-Za-z_]\w*)(?=\()|([{}()\[\];,.<>=+\-*\/%!&|:?]+)/.source, 'g');
+const COLORS = ['', '#8b98a9', '#15803d', '#ea580c', '#7c3aed', '#2563eb', '#db2777'];
+function highlight(code: string) {
+  let out = '', idx = 0, m: RegExpExecArray | null; TOK.lastIndex = 0;
+  while ((m = TOK.exec(code))) {
+    out += esc(code.slice(idx, m.index));
+    let k = 1; while (k < 6 && m[k] === undefined) k++;
+    const st = k === 1 ? ';font-style:italic' : k === 4 ? ';font-weight:700' : '';
+    out += `<span style="color:${COLORS[k]}${st}">${esc(m[0])}</span>`; idx = m.index + m[0].length;
+    if (!m[0].length) TOK.lastIndex++;
+  }
+  return out + esc(code.slice(idx));
+}
+$('#code').onclick = () => {
+  ed.focus(); const s = getSelection()!;
+  if (last) { s.removeAllRanges(); s.addRange(last); }
+  if ((all.checked && !selOnly) || s.isCollapsed) { const r = document.createRange(); r.selectNodeContents(ed); s.removeAllRanges(); s.addRange(r); }
+  const code = s.toString(); if (!code.trim()) return toast('Type or paste some code first.');
+  document.execCommand('insertHTML', false, `<span style="font-family:'JetBrains Mono';font-size:${size}pt;white-space:pre-wrap">${highlight(code)}</span>`);
+  save(); toast('Code style applied');
+};
+
+// ---- Home: side menu and three-dots menu ----
+const drawer = $('#drawer'), pop = $('#pop');
+$('#menu').onclick = () => drawer.classList.add('on');
+$('#more').onclick = e => { e.stopPropagation(); pop.classList.toggle('on'); };
+drawer.onclick = () => drawer.classList.remove('on');
+document.addEventListener('click', () => pop.classList.remove('on'));
+$('#pdark').onclick = () => { dm.checked = !dm.checked; applyDark(); };
+$('#pclr').onclick = () => { ed.innerHTML = ''; save(); toast('Draft cleared'); };
+$$('.about').forEach(b => b.onclick = () => toast('Text to PDF Maker 1.0. Write, style and save PDFs offline.'));
+
+// ---- Floating "Apply on selected text" bar ----
+const sb = $('#selbar');
+sb.addEventListener('pointerdown', () => { selOnly = true; });
+$('#tb').addEventListener('pointerdown', () => { selOnly = false; });
+sb.addEventListener('mousedown', e => { if ((e.target as HTMLElement).tagName !== 'INPUT') e.preventDefault(); });
+$('#scode').onclick = () => $('#code').click();
+$('#sfont').onclick = () => fl.classList.toggle('on');
+($('#sfc') as HTMLInputElement).oninput = e => run(() => cmd('foreColor', (e.target as HTMLInputElement).value));
