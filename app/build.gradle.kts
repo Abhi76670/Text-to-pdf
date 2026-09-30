@@ -14,6 +14,18 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
+    // Keep Java and Kotlin on the same JVM target.
+    // AGP 8.7 + JDK 17 requires release compilation to use Java 17
+    // when Kotlin is targeting JVM 17.
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     buildFeatures { compose = true }
 
     val releaseStoreFile = providers.environmentVariable("RELEASE_STORE_FILE").orNull

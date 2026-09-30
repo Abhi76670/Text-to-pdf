@@ -43,3 +43,7 @@ gradle :app:assembleDebug
 ```
 
 For a signed release locally, provide the four `RELEASE_*` environment variables used by the Gradle signing configuration.
+
+
+### CI build
+The release workflow uses JDK 17 and Gradle 8.9, installs Android SDK 35/build-tools 35.0.0, and compiles both Java and Kotlin with JVM target 17. This avoids the Java 8 vs Kotlin 17 target mismatch that can fail `:app:compileReleaseKotlin`.
