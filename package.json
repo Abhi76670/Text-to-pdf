@@ -1,0 +1,4 @@
+{"name":"text-to-pdf","private":true,"version":"1.0.0","type":"module",
+"scripts":{"dev":"vite","build":"vite build","typecheck":"tsc --noEmit"},
+"devDependencies":{"typescript":"~5.6.3","vite":"^5.4.11"},
+"dependencies":{"@fontsource/roboto":"^5.0.0","@fontsource/tinos":"^5.0.0","@fontsource/gelasio":"^5.0.0","@fontsource/open-sans":"^5.0.0","@fontsource/lato":"^5.0.0","@fontsource/jetbrains-mono":"^5.0.0","@fontsource/fira-code":"^5.0.0","@fontsource/cousine":"^5.0.0","@fontsource/source-code-pro":"^5.0.0","@fontsource/pacifico":"^5.0.0","@fontsource/playfair-display":"^5.0.0","@fontsource/dancing-script":"^5.0.0"}}

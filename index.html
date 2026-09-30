@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Text to PDF Maker</title></head><body>
+<section id="home" class="scr on">
+<div class="top"><svg width="30" height="30" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg><b>Text to PDF Maker</b><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></div>
+<div class="hero"><svg width="290" height="112" viewBox="0 0 290 112"><rect y="12" width="94" height="90" rx="12" fill="#eaedf5"/><path d="M20 34h54M20 50h54M20 66h36M20 82h26" stroke="#2676E8" stroke-width="6" stroke-linecap="round"/><path d="M114 58h40m-14-15 15 15-15 15" stroke="#2676E8" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M180 8h56l34 34v52a10 10 0 0 1-10 10h-80a10 10 0 0 1-10-10V18a10 10 0 0 1 10-10z" fill="#e53935"/><text x="225" y="86" fill="#fff" font-size="30" font-weight="700" text-anchor="middle">PDF</text></svg>
+<h1>Text to PDF<br><span>Maker</span></h1><p>Turn your text into a PDF file<br>quickly and easily.</p></div>
+<div class="acts"><button class="big" data-go="editor"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>Create PDF<svg class="ar" width="26" height="26" viewBox="0 0 24 24" stroke="#fff" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+<div class="two"><button class="card" data-go="pdfs"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2676E8" stroke-width="1.8" stroke-linejoin="round"><path d="M6 2h8l5 5v15H6z"/><path d="M9 13h7M9 17h7" stroke-linecap="round"/></svg>My PDFs<svg width="26" height="20" viewBox="0 0 24 24" stroke="#2676E8" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+<button class="card g" data-go="settings"><svg width="46" height="46" viewBox="0 0 24 24" fill="#12977f"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg>Settings<svg width="26" height="20" viewBox="0 0 24 24" stroke="#12977f" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></div></div>
+</section>
+
+<section id="editor" class="scr">
+<div class="top"><button data-go="home" class="ic">←</button><b>Text to PDF</b><button id="pvb" class="ic">Preview</button><button id="dl" class="pill">Download PDF</button></div>
+<div class="tb" id="tb"><button id="fbtn" class="fb">Roboto ▾</button><button id="sm">−</button><span id="sz">12</span><button id="sp">+</button>
+<button data-c="bold"><b>B</b></button><button data-c="italic"><i>I</i></button><button data-c="underline"><u>U</u></button><button data-c="strikeThrough"><s>S</s></button>
+<label class="cl" style="color:#e53935">A<input type="color" id="fc" value="#111827"></label><label class="cl hl">H<input type="color" id="hc" value="#fff59d"></label>
+<button data-c="justifyLeft" data-a="l"></button><button data-c="justifyCenter" data-a="c"></button><button data-c="justifyRight" data-a="r"></button><button data-c="justifyFull" data-a="j"></button>
+<button data-c="insertUnorderedList">• List</button><button data-c="insertOrderedList">1. List</button><button data-u="undo">↶</button><button data-u="redo">↷</button>
+<label class="all"><input type="checkbox" id="all"> Apply to all</label></div>
+<div id="fl"></div>
+<div id="ed" contenteditable="true" spellcheck="true"></div><div class="cnt" id="cnt"></div>
+</section>
+
+<section id="pv" class="scr"><div class="top"><button data-go="editor" class="ic">←</button><b>PDF preview (A4)</b></div><div class="pvs"><div id="pvw"><div id="page"></div></div></div></section>
+
+<section id="pdfs" class="scr"><div class="top"><button data-go="home" class="ic">←</button><b>My PDFs</b></div><div id="list" class="pad"></div></section>
+
+<section id="settings" class="scr"><div class="top"><button data-go="home" class="ic">←</button><b>Settings</b></div><div class="pad">
+<label class="row">Dark mode (editor and PDF stay white)<input type="checkbox" id="dm"></label><button class="row" id="clr">Clear saved draft</button></div></section>
+
+<div id="dlg"><div class="box"><b>File name</b><input id="fn"><div><button id="cx">Cancel</button><button id="ok" class="pill">Save</button></div></div></div>
+<div id="toast"></div>
+<script type="module" src="/src/main.ts"></script></body></html>
