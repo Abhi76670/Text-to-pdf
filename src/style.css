@@ -30,7 +30,7 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 #page{width:794px;min-height:1123px;padding:76px;background:#fff;color:#111;font:12pt/1.4 Roboto,sans-serif;transform-origin:0 0;word-wrap:break-word}
 .pad{padding:12px 16px;overflow:auto}.row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:16px 4px;border-bottom:1px solid var(--bd);text-align:left;gap:10px}
 .item b{flex:1;word-break:break-all}.item button{color:var(--b);font-weight:700;padding:6px}
-#dlg{display:none;position:fixed;inset:0;background:#0007;align-items:center;justify-content:center;z-index:20}#dlg.on{display:flex}
+#dlg,#adl{display:none;position:fixed;inset:0;background:#0007;align-items:center;justify-content:center;z-index:20}#dlg.on,#adl.on{display:flex}
 .box{background:var(--bg);border-radius:16px;padding:18px;width:86%;display:flex;flex-direction:column;gap:12px}
 .box input{font-size:18px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg)}
 .box div{display:flex;justify-content:flex-end;gap:10px}.box .pill{background:var(--b);color:#fff}
@@ -46,3 +46,5 @@ button{font:inherit;border:0;background:none;color:inherit;cursor:pointer}
 #selbar{display:none;position:fixed;left:8px;right:8px;bottom:46px;z-index:15;background:#1f2937;color:#fff;border-radius:14px;padding:6px 8px;align-items:center;gap:2px;overflow-x:auto;box-shadow:0 6px 20px #0005;scrollbar-width:none}
 #selbar.on{display:flex}#selbar>*{flex:none;min-width:40px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 8px;font-size:16px;color:#fff}
 #selbar>span{font-size:12px;color:#9fb0c8;min-width:0;padding:0 8px 0 2px;white-space:nowrap}#selbar button.on{background:var(--b)}#selbar .cl{position:relative}
+.box span{color:var(--mut);font-size:14px}
+.box .err{color:#e53935;font-weight:600;font-size:15px;word-break:break-word}

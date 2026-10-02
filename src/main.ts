@@ -12,7 +12,7 @@ import '@fontsource/playfair-display/latin-400.css'; import '@fontsource/playfai
 import '@fontsource/pacifico/latin-400.css';
 import './style.css';
 const w = window as any;
-const A = w.Android as undefined | { savePdf(h: string, n: string): void; openFile(u: string): void; shareFile(u: string): void };
+const A = w.Android as undefined | { savePdf(h: string, n: string): void; openFile(u: string): void; shareFile(u: string): void; showRewarded(): void; cancelAd(): void };
 const $ = (s: string) => document.querySelector(s) as HTMLElement;
 const $$ = (s: string) => Array.from(document.querySelectorAll<HTMLElement>(s));
 const ed = $('#ed'), all = $('#all') as HTMLInputElement, fl = $('#fl');
@@ -77,27 +77,75 @@ function setSize(n: number) {
 $('#sm').onclick = () => setSize(size - 1); $('#sp').onclick = () => setSize(size + 1);
 
 $('#pvb').onclick = () => {
-  const p = $('#page'); p.innerHTML = ed.innerHTML; show('pv');
-  const k = (innerWidth - 24) / 794; p.style.transform = `scale(${k})`; $('#pvw').style.height = p.offsetHeight * k + 'px';
+  const p = $('#page');
+  p.innerHTML = ed.innerHTML;
+  show('pv');
+  // Preview uses the same A4 physical dimensions as the print CSS below:
+  // 210mm × 297mm ≈ 794px × 1123px at 96 CSS px/in.
+  const k = Math.min(1, (innerWidth - 24) / 794);
+  p.style.transform = `scale(${k})`;
+  $('#pvw').style.height = Math.max(0, p.offsetHeight * k) + 'px';
 };
 function buildHtml() {
-  const css = (document.querySelector('link[rel=stylesheet]') as HTMLLinkElement | null)?.href || '';
-  return `<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${css}"><style>body{margin:0;background:#fff;color:#111;font:12pt/1.4 Roboto,sans-serif;word-wrap:break-word}ul,ol{margin:0;padding-left:1.4em}</style></head><body>${ed.innerHTML}<script>document.fonts.ready.then(function(){setTimeout(function(){P.ready()},400)})</script></body></html>`;
+  const links = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
+    .map(l => l.href)
+    .filter(Boolean)
+    .map(h => `<link rel="stylesheet" href="${h.replace(/\\/g, '\\')}">`)
+    .join('');
+  const inlineStyles = Array.from(document.querySelectorAll<HTMLStyleElement>('style'))
+    .map(s => s.textContent || '').join('\n');
+  return `<!doctype html><html><head><meta charset="utf-8">${links}<style>${inlineStyles}
+@page{size:A4;margin:20mm;}
+html,body{margin:0;padding:0;background:#fff;color:#111;}
+body{font:12pt/1.4 Roboto,sans-serif;word-wrap:break-word;overflow-wrap:anywhere;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul,ol{margin:0;padding-left:1.4em;}
+img{max-width:100%;height:auto;}
+table{max-width:100%;border-collapse:collapse;}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;}
+</style></head><body>${ed.innerHTML}<script>
+(function(){
+  function ready(){
+    Promise.all(Array.from(document.images).map(function(i){return i.complete?Promise.resolve():new Promise(function(r){i.onload=i.onerror=r;});}))
+      .then(function(){setTimeout(function(){P.ready();},120);});
+  }
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(ready);}else{ready();}
+})();
+</script></body></html>`;
 }
 const fn = $('#fn') as HTMLInputElement;
-$('#dl').onclick = () => { fn.value = 'Document-' + new Date().toISOString().slice(0, 10); $('#dlg').classList.add('on'); };
+let paid = false; // true after a rewarded ad was completed and until the PDF is saved
+const adl = $('#adl'), adt = $('#adt'), ads = $('#ads'), ade = $('#ade'), adr = $('#adr');
+const askName = () => { fn.value = 'Document-' + new Date().toISOString().slice(0, 10); $('#dlg').classList.add('on'); };
+function adBox(err: string | null) {
+  adl.classList.add('on'); adt.textContent = err ? 'Ad error' : 'Loading ad...';
+  ads.style.display = err ? 'none' : ''; ade.style.display = err ? '' : 'none'; adr.style.display = err ? '' : 'none';
+  ade.textContent = err || '';
+}
+function startAd() {
+  if (!A) return toast('Open this app on Android to save PDFs.');
+  adBox(null); A.showRewarded(); // shows instantly if ready; otherwise waits up to 5 seconds
+}
+$('#dl').onclick = () => (paid ? askName() : startAd());
+$('#adc').onclick = () => { adl.classList.remove('on'); A?.cancelAd(); };
+adr.onclick = startAd;
+w.__ad = (r: string, msg?: string) => {
+  if (r === 'failed') return adBox(msg || 'Ad could not load.'); // red error text from the AdMob SDK
+  adl.classList.remove('on');
+  if (r === 'earned') { paid = true; askName(); }
+  else toast('Please watch the full ad to download your PDF.');
+};
 $('#cx').onclick = () => $('#dlg').classList.remove('on');
 $('#ok').onclick = () => {
   $('#dlg').classList.remove('on');
-  if (!A) return toast('Open this app on Android to save PDFs.');
-  toast('Creating PDF...'); A.savePdf(buildHtml(), fn.value.trim() || 'document');
+  if (!paid) return startAd(); // never save without a completed ad
+  paid = false; toast('Creating PDF...'); A!.savePdf(buildHtml(), fn.value.trim() || 'document');
 };
 let pdfs: { uri: string; name: string }[] = ls('pdfs', []);
 w.__saved = (uri: string, name: string) => {
   pdfs.unshift({ uri, name }); localStorage.setItem('pdfs', JSON.stringify(pdfs));
   toast(`Saved to Downloads: ${name}.pdf`, [['Open', () => A!.openFile(uri)], ['Share', () => A!.shareFile(uri)]]);
 };
-w.__err = (m: string) => toast('Could not save PDF: ' + m);
+w.__err = (m: string) => { paid = true; toast('Could not save PDF: ' + m); };
 function renderPdfs() {
   const l = $('#list'); l.innerHTML = pdfs.length ? '' : '<p style="color:var(--mut)">No PDFs yet. Tap Create PDF to make your first one.</p>';
   pdfs.forEach(p => {

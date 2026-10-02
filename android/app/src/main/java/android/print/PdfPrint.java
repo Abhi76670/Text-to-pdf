@@ -11,8 +11,8 @@ public class PdfPrint {
     public static void print(final PrintDocumentAdapter adapter, final File out, final Done done) {
         PrintAttributes attrs = new PrintAttributes.Builder()
                 .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                .setResolution(new PrintAttributes.Resolution("pdf", "pdf", 300, 300))
-                .setMinMargins(new PrintAttributes.Margins(787, 787, 787, 787)) // 20 mm in mils
+                .setResolution(new PrintAttributes.Resolution("pdf", "pdf", 72, 72))
+                .setMinMargins(new PrintAttributes.Margins(0, 0, 0, 0)) // CSS @page supplies the 20 mm A4 margins
                 .build();
         adapter.onLayout(null, attrs, new CancellationSignal(), new PrintDocumentAdapter.LayoutResultCallback() {
             @Override public void onLayoutFinished(PrintDocumentInfo info, boolean changed) {

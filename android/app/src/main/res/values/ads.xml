@@ -1,0 +1,4 @@
+<resources>
+    <string name="admob_app_id" translatable="false">ca-app-pub-8014650926023504~8050463480</string>
+    <string name="admob_rewarded_id" translatable="false">ca-app-pub-8014650926023504/1916214255</string>
+</resources>

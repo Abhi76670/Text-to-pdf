@@ -7,8 +7,8 @@ android {
         applicationId = "com.techapps.pdftotext"
         minSdk = 29
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -30,4 +30,7 @@ android {
     }
 }
 
-dependencies { implementation("androidx.webkit:webkit:1.12.1") }
+dependencies {
+    implementation("androidx.webkit:webkit:1.12.1")
+    implementation("com.google.android.gms:play-services-ads:23.6.0")
+}
