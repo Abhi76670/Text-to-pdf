@@ -114,20 +114,18 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;}
 }
 const fn = $('#fn') as HTMLInputElement;
 const askName = () => { fn.value = 'Document-' + new Date().toISOString().slice(0, 10); $('#dlg').classList.add('on'); };
-
-$('#dl').onclick = askName;
+$('#dl').onclick = () => (A ? askName() : toast('Open this app on Android to save PDFs.'));
 $('#cx').onclick = () => $('#dlg').classList.remove('on');
 $('#ok').onclick = () => {
   $('#dlg').classList.remove('on');
-  if (!A) return toast('Open this app on Android to save PDFs.');
-  toast('Creating PDF...'); A.savePdf(buildHtml(), fn.value.trim() || 'document');
+  toast('Creating PDF...'); A!.savePdf(buildHtml(), fn.value.trim() || 'document');
 };
 let pdfs: { uri: string; name: string }[] = ls('pdfs', []);
 w.__saved = (uri: string, name: string) => {
   pdfs.unshift({ uri, name }); localStorage.setItem('pdfs', JSON.stringify(pdfs));
   toast(`Saved to Downloads: ${name}.pdf`, [['Open', () => A!.openFile(uri)], ['Share', () => A!.shareFile(uri)]]);
 };
-w.__err = (m: string) => { toast('Could not save PDF: ' + m); };
+w.__err = (m: string) => toast('Could not save PDF: ' + m);
 function renderPdfs() {
   const l = $('#list'); l.innerHTML = pdfs.length ? '' : '<p style="color:var(--mut)">No PDFs yet. Tap Create PDF to make your first one.</p>';
   pdfs.forEach(p => {
@@ -178,7 +176,7 @@ drawer.onclick = () => drawer.classList.remove('on');
 document.addEventListener('click', () => pop.classList.remove('on'));
 $('#pdark').onclick = () => { dm.checked = !dm.checked; applyDark(); };
 $('#pclr').onclick = () => { ed.innerHTML = ''; save(); toast('Draft cleared'); };
-$$('.about').forEach(b => b.onclick = () => toast('PDF Converter 1.0. Write, style and save PDFs offline.'));
+$$('.about').forEach(b => b.onclick = () => toast('Text to PDF Maker 1.0. Write, style and save PDFs offline.'));
 
 // ---- Floating "Apply on selected text" bar ----
 const sb = $('#selbar');

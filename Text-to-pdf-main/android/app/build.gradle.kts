@@ -1,10 +1,10 @@
 plugins { id("com.android.application") }
 
 android {
-    namespace = "com.vexoralisoftware.pdfconverter"
+    namespace = "com.vexorali.texttopdf"
     compileSdk = 35
     defaultConfig {
-        applicationId = "com.vexoralisoftware.pdfconverter"
+        applicationId = "com.vexorali.texttopdf"
         minSdk = 29
         targetSdk = 34
         versionCode = 2
